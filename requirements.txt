@@ -1,0 +1,3 @@
+apify
+scrapfly-sdk[all] >= 0.8.5
+loguru >= 0.7.1

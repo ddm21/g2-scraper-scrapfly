@@ -1,0 +1,77 @@
+{
+    "title": "G2 Scraper Input",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "scrapflyApiKey": {
+            "title": "Scrapfly API Key",
+            "type": "string",
+            "description": "Your Scrapfly API key from https://scrapfly.io/dashboard",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "productUrl": {
+            "title": "Product URL",
+            "type": "string",
+            "description": "G2 product URL to scrape (e.g., https://www.g2.com/products/digitalocean/reviews)",
+            "editor": "textfield",
+            "pattern": "^https://www\\.g2\\.com/products/.*$"
+        },
+        "scrapeType": {
+            "title": "Scrape Type",
+            "type": "string",
+            "description": "Type of data to scrape from G2",
+            "enum": [
+                "reviews",
+                "search"
+            ],
+            "enumTitles": [
+                "Reviews",
+                "Search Results"
+            ],
+            "default": "reviews",
+            "editor": "select"
+        },
+        "numberOfReviews": {
+            "title": "Number of Reviews",
+            "type": "integer",
+            "description": "Target number of reviews to scrape. The scraper will paginate until this number is reached (only applies when scrapeType is 'reviews')",
+            "default": 5,
+            "minimum": 5,
+            "editor": "number"
+        },
+        "maxPages": {
+            "title": "Max Pages (Optional)",
+            "type": "integer",
+            "description": "Maximum number of pages to scrape. If set, this overrides the numberOfReviews setting",
+            "minimum": 1,
+            "editor": "number"
+        },
+        "enableSearch": {
+            "title": "Enable Search Scraping",
+            "type": "boolean",
+            "description": "Enable search scraping in addition to the main scrape type",
+            "default": false,
+            "editor": "checkbox"
+        },
+        "searchUrl": {
+            "title": "Search URL",
+            "type": "string",
+            "description": "G2 search URL (e.g., https://www.g2.com/search?query=Infrastructure). Required if 'Enable Search Scraping' is checked",
+            "editor": "textfield",
+            "pattern": "^https://www\\.g2\\.com/search\\?.*$"
+        },
+        "searchMaxPages": {
+            "title": "Search Max Pages",
+            "type": "integer",
+            "description": "Maximum number of search pages to scrape",
+            "default": 3,
+            "minimum": 1,
+            "editor": "number"
+        }
+    },
+    "required": [
+        "scrapflyApiKey",
+        "productUrl"
+    ]
+}

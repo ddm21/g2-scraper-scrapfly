@@ -1,0 +1,8 @@
+{
+    "scrapflyApiKey": "YOUR_SCRAPFLY_API_KEY_HERE",
+    "productUrl": "https://www.g2.com/products/digitalocean/reviews",
+    "scrapeType": "reviews",
+    "numberOfReviews": 10,
+    "enableSearch": false,
+    "enableAlternatives": false
+}

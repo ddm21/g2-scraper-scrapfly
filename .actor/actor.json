@@ -1,0 +1,36 @@
+{
+    "actorSpecification": 1,
+    "name": "g2-scraper",
+    "title": "G2 Scraper",
+    "description": "Scrape product reviews, search results, and alternatives from G2.com using Scrapfly API. Extract detailed review data, product information, and competitive alternatives with smart pagination.",
+    "version": "1.0.0",
+    "meta": {
+        "templateId": "python-start"
+    },
+    "input": "./input_schema.json",
+    "dockerfile": "./Dockerfile",
+    "readme": "./README.md",
+    "storages": {
+        "dataset": {
+            "actorSpecification": 1,
+            "title": "G2 Scraped Data",
+            "views": {
+                "overview": {
+                    "title": "Overview",
+                    "transformation": {
+                        "fields": [
+                            "name",
+                            "rate",
+                            "reviewsNumber",
+                            "description"
+                        ]
+                    },
+                    "display": {
+                        "component": "table",
+                        "properties": {}
+                    }
+                }
+            }
+        }
+    }
+}
