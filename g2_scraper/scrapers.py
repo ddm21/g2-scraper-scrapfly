@@ -9,6 +9,18 @@ from loguru import logger as log
 
 from .config import BASE_CONFIG
 from .parsers import parse_search_page, parse_review_page
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+
+
+def update_url_params(url: str, new_params: Dict[str, any]) -> str:
+    """Safely add or update query parameters in a URL."""
+    parsed = urlparse(url)
+    query_params = parse_qs(parsed.query)
+    for k, v in new_params.items():
+        query_params[k] = [str(v)]
+        
+    new_query = urlencode(query_params, doseq=True)
+    return urlunparse(parsed._replace(query=new_query))
 
 
 async def scrape_search(url: str, scrapfly_client: ScrapflyClient, max_scrape_pages: int = None) -> List[Dict]:
@@ -25,7 +37,7 @@ async def scrape_search(url: str, scrapfly_client: ScrapflyClient, max_scrape_pa
 
     # scrape the remaining search pages concurrently and remove the successful request URLs
     log.info(f"scraping search pagination, remaining ({total_pages - 1}) more pages")
-    remaining_urls = [url + f"&page={page_number}" for page_number in range(2, total_pages + 1)]
+    remaining_urls = [update_url_params(url, {"page": page_number}) for page_number in range(2, total_pages + 1)]
     to_scrape = [ScrapeConfig(url, **BASE_CONFIG) for url in remaining_urls]
     async for response in scrapfly_client.concurrent_scrape(to_scrape):
         try:
@@ -60,7 +72,7 @@ async def scrape_reviews(url: str, scrapfly_client: ScrapflyClient, max_review_p
 
     # scrape the remaining review pages
     log.info(f"scraping reviews pagination, remaining ({total_pages - 1}) more pages")
-    remaining_urls = [url + f"?page={page_number}" for page_number in range(2, total_pages + 1)]
+    remaining_urls = [update_url_params(url, {"page": page_number}) for page_number in range(2, total_pages + 1)]
     to_scrape = [ScrapeConfig(url, **enhanced_config) for url in remaining_urls]
     async for response in scrapfly_client.concurrent_scrape(to_scrape):
         try:
@@ -94,7 +106,7 @@ async def scrape_reviews_by_count(url: str, scrapfly_client: ScrapflyClient, tar
     
     while len(reviews_data) < target_count:
         # Build URL with page parameter
-        page_url = url if page == 1 else f"{url}?page={page}"
+        page_url = url if page == 1 else update_url_params(url, {"page": page})
         
         try:
             log.info(f"scraping page {page}, collected {len(reviews_data)}/{target_count} reviews so far")
